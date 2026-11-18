@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker';
+import { faker } from "@faker-js/faker";
 
 /**
  * Factory de produtos. O nome recebe um sufixo único porque o ServeRest

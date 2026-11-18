@@ -8,19 +8,19 @@ End-to-end tests for the ServeRest **frontend** ([front.serverest.dev](https://f
 
 ### Frontend (E2E)
 
-| # | Spec | Scenario |
-|---|------|----------|
-| 1 | `frontend/cadastro-usuario.cy.js` | Registers an admin user through the UI and redirects them to the admin home page |
-| 2 | `frontend/login.cy.js` | Shows an error message and stays on the login page when the password is wrong |
-| 3 | `frontend/cadastro-produto.cy.js` | Lets an admin register a product and shows it in the product list |
+| #   | Spec                              | Scenario                                                                         |
+| --- | --------------------------------- | -------------------------------------------------------------------------------- |
+| 1   | `frontend/cadastro-usuario.cy.js` | Registers an admin user through the UI and redirects them to the admin home page |
+| 2   | `frontend/login.cy.js`            | Shows an error message and stays on the login page when the password is wrong    |
+| 3   | `frontend/cadastro-produto.cy.js` | Lets an admin register a product and shows it in the product list                |
 
 ### API
 
-| # | Spec | Scenario |
-|---|------|----------|
-| 1 | `api/usuarios.cy.js` | Creates a user and returns the same data when the user is fetched by ID |
-| 2 | `api/login.cy.js` | Authenticates a user with valid credentials and returns a Bearer token |
-| 3 | `api/produtos.cy.js` | Rejects product creation by a user without the admin role (`403`) |
+| #   | Spec                 | Scenario                                                                |
+| --- | -------------------- | ----------------------------------------------------------------------- |
+| 1   | `api/usuarios.cy.js` | Creates a user and returns the same data when the user is fetched by ID |
+| 2   | `api/login.cy.js`    | Authenticates a user with valid credentials and returns a Bearer token  |
+| 3   | `api/produtos.cy.js` | Rejects product creation by a user without the admin role (`403`)       |
 
 The scenarios mix success and error paths and cover registration, authentication and authorization.
 
@@ -42,7 +42,7 @@ cypress/
 
 ## Patterns and design decisions
 
-- **Page Objects** (`support/pages`): each screen wraps its own selectors and actions. Tests describe *what* happens; Page Objects define *how*. All of them extend `BasePage`.
+- **Page Objects** (`support/pages`): each screen wraps its own selectors and actions. Tests describe _what_ happens; Page Objects define _how_. All of them extend `BasePage`.
 - **Service Objects** (`support/api`): each API resource (`/usuarios`, `/login`, `/produtos`) has a class that extends `BaseService`, which holds the base URL, headers and status code handling in one place.
 - **Factories** (`support/factories`): test data is generated with `@faker-js/faker` on every run. Tests don't depend on fixed data and don't collide with other users of the public, shared ServeRest environment (duplicate e-mails or product names).
 - **Preconditions through the API**: users and sessions are created through the API (`cy.cadastrarUsuarioViaApi`, `cy.logarNoFrontendViaApi`). The UI is only used for the behavior under test, which keeps the tests fast and less brittle.

@@ -4,7 +4,7 @@
  * mais resilientes a mudanças de layout/estilo.
  */
 export default class BasePage {
-  constructor(path = '/') {
+  constructor(path = "/") {
     this.path = path;
   }
 

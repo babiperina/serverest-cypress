@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker';
+import { faker } from "@faker-js/faker";
 
 /**
  * Factory de usuários: gera massa de dados única a cada execução,
@@ -8,14 +8,14 @@ import { faker } from '@faker-js/faker';
  */
 export const criarUsuario = (overrides = {}) => ({
   nome: faker.person.fullName(),
-  email: faker.internet.email({ provider: 'qa.serverest.dev' }).toLowerCase(),
+  email: faker.internet.email({ provider: "qa.serverest.dev" }).toLowerCase(),
   password: faker.internet.password({ length: 12 }),
-  administrador: 'true',
+  administrador: "true",
   ...overrides,
 });
 
 export const criarUsuarioAdministrador = (overrides = {}) =>
-  criarUsuario({ administrador: 'true', ...overrides });
+  criarUsuario({ administrador: "true", ...overrides });
 
 export const criarUsuarioComum = (overrides = {}) =>
-  criarUsuario({ administrador: 'false', ...overrides });
+  criarUsuario({ administrador: "false", ...overrides });

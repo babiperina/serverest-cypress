@@ -1,10 +1,10 @@
-const { defineConfig } = require('cypress');
+const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
   e2e: {
-    baseUrl: process.env.FRONT_URL || 'https://front.serverest.dev',
-    specPattern: 'cypress/e2e/**/*.cy.js',
-    supportFile: 'cypress/support/e2e.js',
+    baseUrl: process.env.FRONT_URL || "https://front.serverest.dev",
+    specPattern: "cypress/e2e/**/*.cy.js",
+    supportFile: "cypress/support/e2e.js",
     viewportWidth: 1366,
     viewportHeight: 768,
     defaultCommandTimeout: 10000,
@@ -16,6 +16,6 @@ module.exports = defineConfig({
     },
   },
   expose: {
-    apiUrl: process.env.API_URL || 'https://serverest.dev',
+    apiUrl: process.env.API_URL || "https://serverest.dev",
   },
 });

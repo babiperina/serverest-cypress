@@ -10,10 +10,10 @@ export default class BaseService {
   }
 
   get url() {
-    return `${Cypress.expose('apiUrl')}/${this.resource}`;
+    return `${Cypress.expose("apiUrl")}/${this.resource}`;
   }
 
-  request({ method = 'GET', path = '', body, token } = {}) {
+  request({ method = "GET", path = "", body, token } = {}) {
     return cy.request({
       method,
       url: path ? `${this.url}/${path}` : this.url,

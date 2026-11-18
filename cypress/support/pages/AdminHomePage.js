@@ -1,12 +1,12 @@
-import BasePage from './BasePage';
+import BasePage from "./BasePage";
 
 class AdminHomePage extends BasePage {
   constructor() {
-    super('/admin/home');
+    super("/admin/home");
   }
 
   get titulo() {
-    return cy.get('h1');
+    return cy.get("h1");
   }
 }
 

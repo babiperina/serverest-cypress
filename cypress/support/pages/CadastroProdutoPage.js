@@ -1,29 +1,29 @@
-import BasePage from './BasePage';
+import BasePage from "./BasePage";
 
 class CadastroProdutoPage extends BasePage {
   constructor() {
-    super('/admin/cadastrarprodutos');
+    super("/admin/cadastrarprodutos");
   }
 
   get campoNome() {
-    return this.getByTestId('nome');
+    return this.getByTestId("nome");
   }
 
   get campoPreco() {
-    return this.getByTestId('preco');
+    return this.getByTestId("preco");
   }
 
   get campoDescricao() {
-    return this.getByTestId('descricao');
+    return this.getByTestId("descricao");
   }
 
   get campoQuantidade() {
-    return this.getByTestId('quantity');
+    return this.getByTestId("quantity");
   }
 
   get botaoCadastrar() {
     // O typo "cadastarProdutos" existe no próprio frontend da aplicação.
-    return this.getByTestId('cadastarProdutos');
+    return this.getByTestId("cadastarProdutos");
   }
 
   cadastrar({ nome, preco, descricao, quantidade }) {

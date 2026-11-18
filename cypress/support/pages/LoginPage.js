@@ -1,24 +1,24 @@
-import BasePage from './BasePage';
+import BasePage from "./BasePage";
 
 class LoginPage extends BasePage {
   constructor() {
-    super('/login');
+    super("/login");
   }
 
   get campoEmail() {
-    return this.getByTestId('email');
+    return this.getByTestId("email");
   }
 
   get campoSenha() {
-    return this.getByTestId('senha');
+    return this.getByTestId("senha");
   }
 
   get botaoEntrar() {
-    return this.getByTestId('entrar');
+    return this.getByTestId("entrar");
   }
 
   get alerta() {
-    return cy.get('.alert');
+    return cy.get(".alert");
   }
 
   entrar({ email, password }) {

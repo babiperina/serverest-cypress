@@ -1,12 +1,12 @@
-import BaseService from './BaseService';
+import BaseService from "./BaseService";
 
 class UsuariosService extends BaseService {
   constructor() {
-    super('usuarios');
+    super("usuarios");
   }
 
   cadastrar(usuario) {
-    return this.request({ method: 'POST', body: usuario });
+    return this.request({ method: "POST", body: usuario });
   }
 
   buscarPorId(id) {
@@ -14,7 +14,7 @@ class UsuariosService extends BaseService {
   }
 
   excluir(id) {
-    return this.request({ method: 'DELETE', path: id });
+    return this.request({ method: "DELETE", path: id });
   }
 }
 

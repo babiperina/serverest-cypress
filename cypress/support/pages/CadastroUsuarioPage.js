@@ -1,39 +1,39 @@
-import BasePage from './BasePage';
+import BasePage from "./BasePage";
 
 class CadastroUsuarioPage extends BasePage {
   constructor() {
-    super('/cadastrarusuarios');
+    super("/cadastrarusuarios");
   }
 
   get campoNome() {
-    return this.getByTestId('nome');
+    return this.getByTestId("nome");
   }
 
   get campoEmail() {
-    return this.getByTestId('email');
+    return this.getByTestId("email");
   }
 
   get campoSenha() {
-    return this.getByTestId('password');
+    return this.getByTestId("password");
   }
 
   get checkboxAdministrador() {
-    return this.getByTestId('checkbox');
+    return this.getByTestId("checkbox");
   }
 
   get botaoCadastrar() {
-    return this.getByTestId('cadastrar');
+    return this.getByTestId("cadastrar");
   }
 
   get alerta() {
-    return cy.get('.alert');
+    return cy.get(".alert");
   }
 
   cadastrar({ nome, email, password, administrador }) {
     this.campoNome.type(nome);
     this.campoEmail.type(email);
     this.campoSenha.type(password, { log: false });
-    if (administrador === 'true') {
+    if (administrador === "true") {
       this.checkboxAdministrador.check();
     }
     this.botaoCadastrar.click();

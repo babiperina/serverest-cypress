@@ -1,9 +1,9 @@
-import ProdutosService from '../../support/api/ProdutosService';
-import { criarUsuarioComum } from '../../support/factories/usuarioFactory';
-import { criarProduto } from '../../support/factories/produtoFactory';
-import { MENSAGENS } from '../../support/constants/mensagens';
+import ProdutosService from "../../support/api/ProdutosService";
+import { criarUsuarioComum } from "../../support/factories/usuarioFactory";
+import { criarProduto } from "../../support/factories/produtoFactory";
+import { MENSAGENS } from "../../support/constants/mensagens";
 
-describe('API | Produtos', () => {
+describe("API | Produtos", () => {
   let usuario;
   let usuarioId;
 
@@ -18,7 +18,7 @@ describe('API | Produtos', () => {
     cy.excluirUsuarioViaApi(usuarioId);
   });
 
-  it('não deve permitir que um usuário sem perfil de administrador cadastre produtos', () => {
+  it("não deve permitir que um usuário sem perfil de administrador cadastre produtos", () => {
     const produto = criarProduto();
 
     cy.autenticarViaApi(usuario)
