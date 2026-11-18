@@ -13,13 +13,22 @@ export default class BaseService {
     return `${Cypress.expose("apiUrl")}/${this.resource}`;
   }
 
-  request({ method = "GET", path = "", body, token } = {}) {
+  request({ method = "GET", path = "", body, token, qs, headers = {} } = {}) {
     return cy.request({
       method,
       url: path ? `${this.url}/${path}` : this.url,
       body,
-      headers: token ? { Authorization: token } : {},
+      qs,
+      headers: token ? { ...headers, Authorization: token } : headers,
       failOnStatusCode: false,
     });
+  }
+
+  /**
+   * Sends a raw body with a given Content-Type, for testing how the API handles
+   * bodies that are not JSON.
+   */
+  sendWithContentType({ method = "POST", path = "", body, contentType, token }) {
+    return this.request({ method, path, body, token, headers: { "Content-Type": contentType } });
   }
 }

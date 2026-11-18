@@ -5,12 +5,20 @@ class ProductsService extends BaseService {
     super("produtos");
   }
 
+  list(filters) {
+    return this.request({ qs: filters });
+  }
+
+  findByName(name) {
+    return this.list({ nome: name });
+  }
+
   create(product, token) {
     return this.request({ method: "POST", body: product, token });
   }
 
-  findByName(name) {
-    return cy.request({ url: this.url, qs: { nome: name } });
+  getById(id) {
+    return this.request({ path: id });
   }
 
   update(id, product, token) {
