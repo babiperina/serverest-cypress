@@ -6,11 +6,12 @@ End-to-end tests for the ServeRest **frontend** ([front.serverest.dev](https://f
 
 ### Frontend (E2E)
 
-| #   | Spec                            | Scenario                                                                         |
-| --- | ------------------------------- | -------------------------------------------------------------------------------- |
-| 1   | `frontend/user-signup.cy.js`    | Registers an admin user through the UI and redirects them to the admin home page |
-| 2   | `frontend/login.cy.js`          | Shows an error message and stays on the login page when the password is wrong    |
-| 3   | `frontend/create-product.cy.js` | Lets an admin create a product and shows it in the product list                  |
+| #   | Spec                            | Scenario                                                                               |
+| --- | ------------------------------- | -------------------------------------------------------------------------------------- |
+| 1   | `frontend/user-signup.cy.js`    | Registers an admin user through the UI and redirects them to the admin home page       |
+| 2   | `frontend/login.cy.js`          | Logs in an admin user with valid credentials and redirects them to the admin home page |
+| 3   | `frontend/login.cy.js`          | Shows an error message and stays on the login page when the password is wrong          |
+| 4   | `frontend/create-product.cy.js` | Lets an admin create a product and shows it in the product list                        |
 
 ### API
 
