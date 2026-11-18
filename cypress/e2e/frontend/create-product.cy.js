@@ -1,3 +1,5 @@
+import LoginPage from "../../support/pages/LoginPage";
+import AdminHomePage from "../../support/pages/AdminHomePage";
 import CreateProductPage from "../../support/pages/CreateProductPage";
 import ProductListPage from "../../support/pages/ProductListPage";
 import ProductsService from "../../support/api/ProductsService";
@@ -10,8 +12,8 @@ describe("Frontend | Create product", () => {
 
   beforeEach(() => {
     productId = undefined;
-    cy.visit("/");
-    cy.loginViaApi(USERS.admin);
+    LoginPage.visit().login(USERS.admin);
+    cy.location("pathname").should("eq", AdminHomePage.path);
   });
 
   afterEach(() => {

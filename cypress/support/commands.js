@@ -21,17 +21,6 @@ Cypress.Commands.add("getAuthTokenViaApi", ({ email, password }) => {
   });
 });
 
-Cypress.Commands.add("loginViaApi", (user) => {
-  cy.getAuthTokenViaApi(user).then((token) => {
-    cy.window().then((win) => {
-      // Keys used by the ServeRest frontend to keep the session.
-      win.localStorage.setItem("serverest/userToken", token);
-      win.localStorage.setItem("serverest/userNome", user.nome);
-      win.localStorage.setItem("serverest/userEmail", user.email);
-    });
-  });
-});
-
 Cypress.Commands.add("deleteUserViaApi", (id) => {
   if (!id) return;
   UsersService.deleteById(id);

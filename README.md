@@ -49,7 +49,7 @@ cypress/
 - **Service Objects** (`support/api`): each API resource (`/usuarios`, `/login`, `/produtos`) has a class that extends `BaseService`, which holds the base URL, headers and status code handling in one place.
 - **Factories** (`support/factories`): test data is generated with `@faker-js/faker` on every run. Tests don't depend on fixed data and don't collide with other users of the public, shared ServeRest environment (duplicate e-mails or product names).
 - **Existing test data** (`support/data/userData.js`): users that already exist in ServeRest. Scenarios that only read data, such as login, reuse them instead of creating a user. Tests never update or delete these users.
-- **Preconditions through the API**: users and sessions are created through the API (`cy.createUserViaApi`, `cy.loginViaApi`). The UI is only used for the behavior under test, which keeps the tests fast and less brittle.
+- **Preconditions through the API**: users that a test needs are created through the API (`cy.createUserViaApi`), which keeps the tests fast and less brittle. Logging in on the frontend is always done through the login page, as a real user would.
 - **Isolation and cleanup**: tests that need new data create it themselves and delete it in `afterEach`, so tests can run alone and in any order.
 - **Stable selectors**: only `data-testid` attributes are used (except for alerts and headings, which don't have one).
 - **Behavior-focused assertions**: frontend tests check the UI (message, route, table content) and also the intercepted request and response with `cy.intercept`. There are no fixed `cy.wait(<ms>)` calls.
