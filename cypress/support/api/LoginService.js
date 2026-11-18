@@ -5,7 +5,7 @@ class LoginService extends BaseService {
     super("login");
   }
 
-  autenticar({ email, password }) {
+  login({ email, password }) {
     return this.request({ method: "POST", body: { email, password } });
   }
 }

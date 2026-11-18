@@ -5,7 +5,7 @@ class AdminHomePage extends BasePage {
     super("/admin/home");
   }
 
-  get titulo() {
+  get heading() {
     return cy.get("h1");
   }
 }

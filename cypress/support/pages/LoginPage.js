@@ -5,26 +5,26 @@ class LoginPage extends BasePage {
     super("/login");
   }
 
-  get campoEmail() {
+  get emailInput() {
     return this.getByTestId("email");
   }
 
-  get campoSenha() {
+  get passwordInput() {
     return this.getByTestId("senha");
   }
 
-  get botaoEntrar() {
+  get loginButton() {
     return this.getByTestId("entrar");
   }
 
-  get alerta() {
+  get alert() {
     return cy.get(".alert");
   }
 
-  entrar({ email, password }) {
-    this.campoEmail.type(email);
-    this.campoSenha.type(password, { log: false });
-    this.botaoEntrar.click();
+  login({ email, password }) {
+    this.emailInput.type(email);
+    this.passwordInput.type(password, { log: false });
+    this.loginButton.click();
     return this;
   }
 }

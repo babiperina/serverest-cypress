@@ -1,26 +1,26 @@
 import LoginPage from "../../support/pages/LoginPage";
-import { criarUsuarioComum } from "../../support/factories/usuarioFactory";
-import { MENSAGENS } from "../../support/constants/mensagens";
+import { buildRegularUser } from "../../support/factories/userFactory";
+import { MESSAGES } from "../../support/constants/messages";
 
 describe("Frontend | Login", () => {
-  let usuario;
-  let usuarioId;
+  let user;
+  let userId;
 
   beforeEach(() => {
-    usuario = criarUsuarioComum();
-    cy.cadastrarUsuarioViaApi(usuario).then((id) => {
-      usuarioId = id;
+    user = buildRegularUser();
+    cy.createUserViaApi(user).then((id) => {
+      userId = id;
     });
   });
 
   afterEach(() => {
-    cy.excluirUsuarioViaApi(usuarioId);
+    cy.deleteUserViaApi(userId);
   });
 
-  it("deve exibir mensagem de erro e permanecer na tela de login ao informar senha incorreta", () => {
-    LoginPage.visitar().entrar({ email: usuario.email, password: "senha-incorreta" });
+  it("should show an error message and stay on the login page when the password is wrong", () => {
+    LoginPage.visit().login({ email: user.email, password: "wrong-password" });
 
-    LoginPage.alerta.should("be.visible").and("contain.text", MENSAGENS.LOGIN_INVALIDO);
+    LoginPage.alert.should("be.visible").and("contain.text", MESSAGES.INVALID_CREDENTIALS);
     cy.location("pathname").should("eq", LoginPage.path);
     cy.window().its("localStorage").invoke("getItem", "serverest/userToken").should("be.null");
   });

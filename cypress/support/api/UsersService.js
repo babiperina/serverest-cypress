@@ -1,21 +1,21 @@
 import BaseService from "./BaseService";
 
-class UsuariosService extends BaseService {
+class UsersService extends BaseService {
   constructor() {
     super("usuarios");
   }
 
-  cadastrar(usuario) {
-    return this.request({ method: "POST", body: usuario });
+  create(user) {
+    return this.request({ method: "POST", body: user });
   }
 
-  buscarPorId(id) {
+  getById(id) {
     return this.request({ path: id });
   }
 
-  excluir(id) {
+  deleteById(id) {
     return this.request({ method: "DELETE", path: id });
   }
 }
 
-export default new UsuariosService();
+export default new UsersService();

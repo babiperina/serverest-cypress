@@ -1,8 +1,8 @@
 /**
- * Classe base dos Service Objects da API.
+ * Base class for the API Service Objects.
  *
- * Centraliza a URL da API e o envio das requisições. `failOnStatusCode: false`
- * permite que os próprios testes façam as assertivas sobre status de erro (4xx).
+ * Holds the API base URL and sends the requests. `failOnStatusCode: false`
+ * lets the specs assert on error status codes (4xx) themselves.
  */
 export default class BaseService {
   constructor(resource) {
