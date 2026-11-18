@@ -20,13 +20,23 @@ End-to-end tests for the ServeRest **frontend** ([front.serverest.dev](https://f
 
 ### API
 
-| #   | Spec                 | Scenario                                                                |
-| --- | -------------------- | ----------------------------------------------------------------------- |
-| 1   | `api/users.cy.js`    | Creates a user and returns the same data when the user is fetched by ID |
-| 2   | `api/login.cy.js`    | Authenticates a user with valid credentials and returns a Bearer token  |
-| 3   | `api/products.cy.js` | Rejects product creation by a user without the admin role (`403`)       |
+The API specs cover the status codes documented in the [Swagger](https://serverest.dev/) for the login, users and products endpoints. Each test title starts with the status code it checks, and the tests are grouped by endpoint.
 
-The scenarios mix success and error paths and cover registration, authentication and authorization.
+| Endpoint                 | Spec                 | Status codes covered                                                                                                 |
+| ------------------------ | -------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `POST /login`            | `api/login.cy.js`    | 200, 400 (empty body, invalid email), 401, 413, 415 (**[known bug](#api-never-returns-415-unsupported-media-type)**) |
+| `GET /usuarios`          | `api/users.cy.js`    | 200 (email filter), 400 (invalid filter)                                                                             |
+| `POST /usuarios`         | `api/users.cy.js`    | 201, 400 (email in use, empty body), 413, 415 (**[known bug](#api-never-returns-415-unsupported-media-type)**)       |
+| `GET /usuarios/{_id}`    | `api/users.cy.js`    | 200, 400 (not found)                                                                                                 |
+| `PUT /usuarios/{_id}`    | `api/users.cy.js`    | 200, 201 (ID doesn't exist), 400 (email in use)                                                                      |
+| `DELETE /usuarios/{_id}` | `api/users.cy.js`    | 200 (deleted), 200 (no record deleted), 400 (user has a cart)                                                        |
+| `GET /produtos`          | `api/products.cy.js` | 200 (name filter), 400 (invalid filter)                                                                              |
+| `POST /produtos`         | `api/products.cy.js` | 201, 400 (name in use), 401, 403, 413, 415 (**[known bug](#api-never-returns-415-unsupported-media-type)**)          |
+| `GET /produtos/{_id}`    | `api/products.cy.js` | 200, 400 (not found)                                                                                                 |
+| `PUT /produtos/{_id}`    | `api/products.cy.js` | 200, 201 (ID doesn't exist), 400 (name in use), 401, 403                                                             |
+| `DELETE /produtos/{_id}` | `api/products.cy.js` | 200 (deleted), 200 (no record deleted), 400 (product in a cart), 401, 403                                            |
+
+`429 Too Many Requests` is documented for every endpoint but is not automated (see [Technical questions](#429-too-many-requests-is-not-automated)).
 
 ## Project structure
 
@@ -36,7 +46,7 @@ cypress/
 │   ├── api/                 # API specs
 │   └── frontend/            # Frontend E2E specs
 └── support/
-    ├── api/                 # Service Objects (one per API resource)
+    ├── api/                 # Service Objects (one per API resource, plus carts for preconditions)
     ├── pages/               # Page Objects (one per screen)
     ├── data/                # Existing users and products reused by the tests
     ├── factories/           # Test data generation with Faker
@@ -84,6 +94,16 @@ The product list table (`/admin/listarprodutos`) has no `data-testid` attributes
 
 **Recommendation:** good practice would be to add `data-testid` attributes to the rows, cells and action buttons (for example `data-testid="product-row"` and `data-testid="edit-product"`). The selectors would then no longer depend on the text shown in the table.
 
+### `429 Too Many Requests` is not automated
+
+The Swagger documents `429` for every endpoint. Triggering it means flooding the API with requests until the rate limit is reached.
+
+**Decision:** not automated. ServeRest is a free, public environment shared by other people, and a test that floods it would affect everyone using it. This status code should be tested in a dedicated environment, where the rate limit can be lowered or the test can't affect other users.
+
+### Preconditions that need a cart
+
+ServeRest doesn't allow deleting a user that has a cart (`DELETE /usuarios/{_id}`) or a product that is in a cart (`DELETE /produtos/{_id}`). To cover these `400` responses, the tests create a cart through `CartsService` as a precondition. In `afterEach`, the cart is cancelled first, so the product and user created for the test can then be deleted.
+
 ## Known bugs
 
 ### "Editar" button on the product list does nothing
@@ -103,6 +123,24 @@ The product list table (`/admin/listarprodutos`) has no `data-testid` attributes
 **Test:** `frontend/edit-product.cy.js` covers this flow and fails on purpose until the bug is fixed. It fails right after clicking "Editar", with the message `edit page should open after clicking "Editar"`, because the page stays on the product list. Everything before that step (login, finding the product in the list) works.
 
 Since the edit page doesn't exist yet, `EditProductPage` assumes it will reuse the `data-testid` attributes of the create product form. Good practice would be for the new page to expose its own `data-testid` attributes for its fields and save button, so these selectors can be confirmed once the page exists.
+
+### API never returns `415 Unsupported Media Type`
+
+**Where:** the Swagger documents `415` for `POST /login`, `POST /usuarios`, `POST /produtos` and `PUT` on users and products. The tests check the three `POST` endpoints.
+
+**Steps to reproduce:**
+
+```bash
+curl -i -X POST https://serverest.dev/login \
+  -H "Content-Type: text/plain" \
+  -d "email=fulano@qa.com&password=teste"
+```
+
+**Expected:** `415 Unsupported Media Type`, as documented in the Swagger.
+
+**Actual:** `400 Bad Request` with the required field messages (`email é obrigatório`, `password é obrigatório`). The API ignores the body instead of rejecting its type. The same happens with `application/xml`, `text/html`, `application/octet-stream`, `multipart/form-data` and `image/png`.
+
+**Test:** the `415` tests in `api/login.cy.js`, `api/users.cy.js` and `api/products.cy.js` fail on purpose with `expected 400 to equal 415` until the API returns the documented status code (or the Swagger is corrected).
 
 ## Requirements
 
