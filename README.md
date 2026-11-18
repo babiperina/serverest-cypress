@@ -32,6 +32,7 @@ cypress/
 └── support/
     ├── api/                 # Service Objects (one per API resource)
     ├── pages/               # Page Objects (one per screen)
+    ├── data/                # Existing users reused by read-only scenarios
     ├── factories/           # Test data generation with Faker
     ├── constants/           # Messages returned by the application
     ├── commands.js          # Custom commands (setting up preconditions via the API)
@@ -43,6 +44,7 @@ cypress/
 - **Page Objects** (`support/pages`): each screen wraps its own selectors and actions. Tests describe _what_ happens; Page Objects define _how_. All of them extend `BasePage`.
 - **Service Objects** (`support/api`): each API resource (`/usuarios`, `/login`, `/produtos`) has a class that extends `BaseService`, which holds the base URL, headers and status code handling in one place.
 - **Factories** (`support/factories`): test data is generated with `@faker-js/faker` on every run. Tests don't depend on fixed data and don't collide with other users of the public, shared ServeRest environment (duplicate e-mails or product names).
+- **Existing test data** (`support/data/userData.js`): users that already exist in ServeRest. Scenarios that only read data, such as login, reuse them instead of creating a user. Tests never update or delete these users.
 - **Preconditions through the API**: users and sessions are created through the API (`cy.createUserViaApi`, `cy.loginViaApi`). The UI is only used for the behavior under test, which keeps the tests fast and less brittle.
 - **Isolation and cleanup**: each test creates its own data and deletes it in `afterEach`, so tests can run alone and in any order.
 - **Stable selectors**: only `data-testid` attributes are used (except for alerts and headings, which don't have one).
