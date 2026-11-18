@@ -11,7 +11,10 @@ End-to-end tests for the ServeRest **frontend** ([front.serverest.dev](https://f
 | 1   | `frontend/user-signup.cy.js`    | Registers an admin user through the UI and redirects them to the admin home page       |
 | 2   | `frontend/login.cy.js`          | Logs in an admin user with valid credentials and redirects them to the admin home page |
 | 3   | `frontend/login.cy.js`          | Shows an error message and stays on the login page when the password is wrong          |
-| 4   | `frontend/create-product.cy.js` | Lets an admin create a product and shows it in the product list                        |
+| 4   | `frontend/login.cy.js`          | Shows a required message for each field when both are empty                            |
+| 5   | `frontend/login.cy.js`          | Shows only the password required message when the password is empty                    |
+| 6   | `frontend/login.cy.js`          | Shows only the email required message when the email is empty                          |
+| 7   | `frontend/create-product.cy.js` | Lets an admin create a product and shows it in the product list                        |
 
 ### API
 

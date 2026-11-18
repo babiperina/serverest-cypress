@@ -31,4 +31,36 @@ describe("Frontend | Login", () => {
     cy.location("pathname").should("eq", LoginPage.path);
     cy.window().its("localStorage").invoke("getItem", "serverest/userToken").should("be.null");
   });
+
+  describe("Required fields", () => {
+    const shouldShowOnlyMessages = (...messages) => {
+      LoginPage.alert.should("have.length", messages.length);
+      messages.forEach((message) => {
+        LoginPage.alert.should("contain.text", message);
+      });
+      cy.location("pathname").should("eq", LoginPage.path);
+    };
+
+    beforeEach(() => {
+      LoginPage.visit();
+    });
+
+    it("should show a required message for each field when both are empty", () => {
+      LoginPage.login();
+
+      shouldShowOnlyMessages(MESSAGES.EMAIL_REQUIRED, MESSAGES.PASSWORD_REQUIRED);
+    });
+
+    it("should show only the password required message when the password is empty", () => {
+      LoginPage.login({ email: USERS.admin.email });
+
+      shouldShowOnlyMessages(MESSAGES.PASSWORD_REQUIRED);
+    });
+
+    it("should show only the email required message when the email is empty", () => {
+      LoginPage.login({ password: USERS.admin.password });
+
+      shouldShowOnlyMessages(MESSAGES.EMAIL_REQUIRED);
+    });
+  });
 });

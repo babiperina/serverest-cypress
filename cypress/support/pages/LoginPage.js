@@ -21,9 +21,13 @@ class LoginPage extends BasePage {
     return cy.get(".alert");
   }
 
-  login({ email, password }) {
-    this.emailInput.type(email);
-    this.passwordInput.type(password, { log: false });
+  /**
+   * Fills in only the fields that were given, so the same action also covers
+   * the scenarios that leave fields empty.
+   */
+  login({ email, password } = {}) {
+    if (email) this.emailInput.type(email);
+    if (password) this.passwordInput.type(password, { log: false });
     this.loginButton.click();
     return this;
   }
