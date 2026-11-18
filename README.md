@@ -16,6 +16,7 @@ End-to-end tests for the ServeRest **frontend** ([front.serverest.dev](https://f
 | 6   | `frontend/login.cy.js`          | Shows only the email required message when the email is empty                                                                                      |
 | 7   | `frontend/create-product.cy.js` | Lets an admin create a product and shows it in the product list                                                                                    |
 | 8   | `frontend/edit-product.cy.js`   | Lets an admin add `Editado em <today>` to the end of a product description (**fails: [known bug](#edit-button-on-the-product-list-does-nothing)**) |
+| 9   | `frontend/delete-product.cy.js` | Lets an admin delete a product (created through the API) and removes it from the product list                                                      |
 
 ### API
 

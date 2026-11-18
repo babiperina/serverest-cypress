@@ -42,6 +42,11 @@ class ProductListPage extends BasePage {
     this.productRow(name).contains("button", "Editar").click();
     return this;
   }
+
+  deleteProduct(name) {
+    this.productRow(name).contains("button", "Excluir").click();
+    return this;
+  }
 }
 
 export default new ProductListPage();

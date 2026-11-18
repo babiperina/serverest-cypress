@@ -5,6 +5,7 @@
  */
 export const MESSAGES = Object.freeze({
   REGISTRATION_SUCCESS: "Cadastro realizado com sucesso",
+  DELETION_SUCCESS: "Registro excluído com sucesso",
   LOGIN_SUCCESS: "Login realizado com sucesso",
   INVALID_CREDENTIALS: "Email e/ou senha inválidos",
   EMAIL_REQUIRED: "Email é obrigatório",
