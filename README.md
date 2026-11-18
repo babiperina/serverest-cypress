@@ -6,15 +6,16 @@ End-to-end tests for the ServeRest **frontend** ([front.serverest.dev](https://f
 
 ### Frontend (E2E)
 
-| #   | Spec                            | Scenario                                                                               |
-| --- | ------------------------------- | -------------------------------------------------------------------------------------- |
-| 1   | `frontend/user-signup.cy.js`    | Registers an admin user through the UI and redirects them to the admin home page       |
-| 2   | `frontend/login.cy.js`          | Logs in an admin user with valid credentials and redirects them to the admin home page |
-| 3   | `frontend/login.cy.js`          | Shows an error message and stays on the login page when the password is wrong          |
-| 4   | `frontend/login.cy.js`          | Shows a required message for each field when both are empty                            |
-| 5   | `frontend/login.cy.js`          | Shows only the password required message when the password is empty                    |
-| 6   | `frontend/login.cy.js`          | Shows only the email required message when the email is empty                          |
-| 7   | `frontend/create-product.cy.js` | Lets an admin create a product and shows it in the product list                        |
+| #   | Spec                            | Scenario                                                                                                                                           |
+| --- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `frontend/user-signup.cy.js`    | Registers an admin user through the UI and redirects them to the admin home page                                                                   |
+| 2   | `frontend/login.cy.js`          | Logs in an admin user with valid credentials and redirects them to the admin home page                                                             |
+| 3   | `frontend/login.cy.js`          | Shows an error message and stays on the login page when the password is wrong                                                                      |
+| 4   | `frontend/login.cy.js`          | Shows a required message for each field when both are empty                                                                                        |
+| 5   | `frontend/login.cy.js`          | Shows only the password required message when the password is empty                                                                                |
+| 6   | `frontend/login.cy.js`          | Shows only the email required message when the email is empty                                                                                      |
+| 7   | `frontend/create-product.cy.js` | Lets an admin create a product and shows it in the product list                                                                                    |
+| 8   | `frontend/edit-product.cy.js`   | Lets an admin add `Editado em <today>` to the end of a product description (**fails: [known bug](#edit-button-on-the-product-list-does-nothing)**) |
 
 ### API
 
@@ -36,9 +37,10 @@ cypress/
 └── support/
     ├── api/                 # Service Objects (one per API resource)
     ├── pages/               # Page Objects (one per screen)
-    ├── data/                # Existing users reused by read-only scenarios
+    ├── data/                # Existing users and products reused by the tests
     ├── factories/           # Test data generation with Faker
     ├── constants/           # Messages returned by the application
+    ├── utils/               # Small helpers (date formatting)
     ├── commands.js          # Custom commands (setting up preconditions via the API)
     └── e2e.js
 ```
@@ -48,7 +50,7 @@ cypress/
 - **Page Objects** (`support/pages`): each screen wraps its own selectors and actions. Tests describe _what_ happens; Page Objects define _how_. All of them extend `BasePage`.
 - **Service Objects** (`support/api`): each API resource (`/usuarios`, `/login`, `/produtos`) has a class that extends `BaseService`, which holds the base URL, headers and status code handling in one place.
 - **Factories** (`support/factories`): test data is generated with `@faker-js/faker` on every run. Tests don't depend on fixed data and don't collide with other users of the public, shared ServeRest environment (duplicate e-mails or product names).
-- **Existing test data** (`support/data/userData.js`): users that already exist in ServeRest. Scenarios that only read data, such as login, reuse them instead of creating a user. Tests never update or delete these users.
+- **Existing test data** (`support/data`): users and products that already exist in ServeRest. Scenarios such as login reuse them instead of creating new data. Tests never delete this data, and a test that changes it (such as editing a product) restores the original values in `afterEach`.
 - **Preconditions through the API**: users that a test needs are created through the API (`cy.createUserViaApi`), which keeps the tests fast and less brittle. Logging in on the frontend is always done through the login page, as a real user would.
 - **Isolation and cleanup**: tests that need new data create it themselves and delete it in `afterEach`, so tests can run alone and in any order.
 - **Stable selectors**: only `data-testid` attributes are used (except for alerts and headings, which don't have one).
@@ -72,6 +74,24 @@ The required message is built from the field's `name` attribute, so the password
 **Decision:** the tests assert the message the application shows today, `Password é obrigatório` (`MESSAGES.PASSWORD_REQUIRED`), matching the field's `name`.
 
 **Open question:** the expected message may be `Senha é obrigatória` instead. This needs to be confirmed with the product team. If it is confirmed, the current behavior is a bug, and only `MESSAGES.PASSWORD_REQUIRED` in `support/constants/messages.js` needs to change.
+
+## Known bugs
+
+### "Editar" button on the product list does nothing
+
+**Where:** `/admin/listarprodutos`, "Editar" button on each product row.
+
+**Steps to reproduce:**
+
+1. Log in as an admin.
+2. Open the product list ("Listar Produtos").
+3. Click "Editar" on any product.
+
+**Expected:** a form opens with the product data, so the admin can change it and save.
+
+**Actual:** nothing happens. The button has no click handler in the frontend code, there is no edit route, and the frontend never calls `PUT /produtos/{id}` (the API itself supports editing). The same happens with the "Editar" button on the user list.
+
+**Test:** `frontend/edit-product.cy.js` covers this flow and fails on purpose until the bug is fixed. It fails right after clicking "Editar", because the product form never appears. The test assumes the edit form reuses the same fields as the create product form.
 
 ## Requirements
 

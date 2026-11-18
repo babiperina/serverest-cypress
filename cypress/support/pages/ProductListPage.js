@@ -12,6 +12,11 @@ class ProductListPage extends BasePage {
   productRow(name) {
     return cy.contains("table tbody tr", name);
   }
+
+  editProduct(name) {
+    this.productRow(name).contains("button", "Editar").click();
+    return this;
+  }
 }
 
 export default new ProductListPage();
