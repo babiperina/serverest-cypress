@@ -1,30 +1,24 @@
 import CreateProductPage from "../../support/pages/CreateProductPage";
 import ProductListPage from "../../support/pages/ProductListPage";
 import ProductsService from "../../support/api/ProductsService";
-import { buildAdminUser } from "../../support/factories/userFactory";
+import { USERS } from "../../support/data/userData";
 import { buildProduct } from "../../support/factories/productFactory";
 import { MESSAGES } from "../../support/constants/messages";
 
 describe("Frontend | Create product", () => {
-  let admin;
-  let adminId;
   let productId;
 
   beforeEach(() => {
-    admin = buildAdminUser();
     productId = undefined;
-    cy.createUserViaApi(admin).then((id) => {
-      adminId = id;
-    });
     cy.visit("/");
-    cy.loginViaApi(admin);
+    cy.loginViaApi(USERS.admin);
   });
 
   afterEach(() => {
-    cy.getAuthTokenViaApi(admin).then((token) => {
-      if (productId) ProductsService.deleteById(productId, token);
+    if (!productId) return;
+    cy.getAuthTokenViaApi(USERS.admin).then((token) => {
+      ProductsService.deleteById(productId, token);
     });
-    cy.deleteUserViaApi(adminId);
   });
 
   it("should let an admin create a product and see it in the product list", () => {
