@@ -1,7 +1,7 @@
 import LoginPage from "../../support/pages/LoginPage";
 import AdminHomePage from "../../support/pages/AdminHomePage";
-import CreateProductPage from "../../support/pages/CreateProductPage";
-import ProductListPage from "../../support/pages/ProductListPage";
+import EditProductPage from "../../support/pages/EditProductPage";
+import ProductListPage, { PRODUCT_COLUMNS } from "../../support/pages/ProductListPage";
 import ProductsService from "../../support/api/ProductsService";
 import { USERS } from "../../support/data/userData";
 import { PRODUCTS } from "../../support/data/productData";
@@ -9,7 +9,7 @@ import { formatDate } from "../../support/utils/date";
 
 /**
  * Known bug: the "Editar" button on the product list does nothing, so this test
- * fails until the edit flow is implemented. See "Known bugs" in the README.
+ * fails when it checks that the edit page opened. See "Known bugs" in the README.
  */
 describe("Frontend | Edit product", () => {
   const product = PRODUCTS.bambuLabA1;
@@ -33,24 +33,33 @@ describe("Frontend | Edit product", () => {
 
   it("should let an admin add an edit note to the end of a product description", () => {
     const editNote = ` Editado em ${formatDate()}`;
-    const editedDescription = `${product.descricao}${editNote}`;
 
     ProductListPage.visit().editProduct(product.nome);
 
-    // There is no edit page yet. The test expects the product form to open
-    // pre-filled with the product data.
-    CreateProductPage.nameInput.should("have.value", product.nome);
-    CreateProductPage.descriptionInput.should("have.value", product.descricao).type(editNote);
-    CreateProductPage.submitButton.click();
+    // Known bug: this is where the test fails today, because "Editar" doesn't open any page.
+    cy.location("pathname").should((pathname) => {
+      expect(pathname, 'edit page should open after clicking "Editar"').not.to.eq(
+        ProductListPage.path,
+      );
+    });
+    EditProductPage.appendToDescription(editNote);
 
     cy.location("pathname").should("eq", ProductListPage.path);
-    ProductListPage.productRow(product.nome)
-      .should("be.visible")
-      .within(() => {
-        cy.get("td").eq(0).should("have.text", product.nome);
-        cy.get("td").eq(1).should("have.text", String(product.preco));
-        cy.get("td").eq(2).should("have.text", editedDescription);
-        cy.get("td").eq(4).should("have.text", product.imagem);
-      });
+    ProductListPage.productCell(product.nome, PRODUCT_COLUMNS.NAME).should(
+      "have.text",
+      product.nome,
+    );
+    ProductListPage.productCell(product.nome, PRODUCT_COLUMNS.DESCRIPTION).should(
+      "have.text",
+      `${product.descricao}${editNote}`,
+    );
+    ProductListPage.productCell(product.nome, PRODUCT_COLUMNS.PRICE).should(
+      "have.text",
+      String(product.preco),
+    );
+    ProductListPage.productCell(product.nome, PRODUCT_COLUMNS.IMAGE).should(
+      "have.text",
+      product.imagem,
+    );
   });
 });

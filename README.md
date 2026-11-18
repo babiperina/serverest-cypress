@@ -53,7 +53,7 @@ cypress/
 - **Existing test data** (`support/data`): users and products that already exist in ServeRest. Scenarios such as login reuse them instead of creating new data. Tests never delete this data, and a test that changes it (such as editing a product) restores the original values in `afterEach`.
 - **Preconditions through the API**: users that a test needs are created through the API (`cy.createUserViaApi`), which keeps the tests fast and less brittle. Logging in on the frontend is always done through the login page, as a real user would.
 - **Isolation and cleanup**: tests that need new data create it themselves and delete it in `afterEach`, so tests can run alone and in any order.
-- **Stable selectors**: only `data-testid` attributes are used (except for alerts and headings, which don't have one).
+- **Stable selectors**: `data-testid` attributes are used wherever the application provides them. Alerts, headings and the product list don't have them (see [Technical questions](#product-list-has-no-data-testid-attributes)).
 - **Behavior-focused assertions**: frontend tests check the UI (message, route, table content) and also the intercepted request and response with `cy.intercept`. There are no fixed `cy.wait(<ms>)` calls.
 - **Centralized messages** (`support/constants/messages.js`), so assertions don't scatter magic strings.
 - **Language**: the code is written in English. The only Portuguese text is what belongs to the application under test: the messages it returns, API field names (`nome`, `preco`, ...), routes and `data-testid` values.
@@ -75,6 +75,14 @@ The required message is built from the field's `name` attribute, so the password
 
 **Open question:** the expected message may be `Senha é obrigatória` instead. This needs to be confirmed with the product team. If it is confirmed, the current behavior is a bug, and only `MESSAGES.PASSWORD_REQUIRED` in `support/constants/messages.js` needs to change.
 
+### Product list has no `data-testid` attributes
+
+The product list table (`/admin/listarprodutos`) has no `data-testid` attributes on its rows, cells or "Editar"/"Excluir" buttons, unlike the forms in the application.
+
+**Decision:** `ProductListPage` finds a row by the product name and a cell by the text of its column header (`PRODUCT_COLUMNS`: "Nome", "Preço", "Descrição", "Quantidade", "Imagem"), instead of a fixed column position. The tests stay readable and keep working if the column order changes.
+
+**Recommendation:** good practice would be to add `data-testid` attributes to the rows, cells and action buttons (for example `data-testid="product-row"` and `data-testid="edit-product"`). The selectors would then no longer depend on the text shown in the table.
+
 ## Known bugs
 
 ### "Editar" button on the product list does nothing
@@ -91,7 +99,9 @@ The required message is built from the field's `name` attribute, so the password
 
 **Actual:** nothing happens. The button has no click handler in the frontend code, there is no edit route, and the frontend never calls `PUT /produtos/{id}` (the API itself supports editing). The same happens with the "Editar" button on the user list.
 
-**Test:** `frontend/edit-product.cy.js` covers this flow and fails on purpose until the bug is fixed. It fails right after clicking "Editar", because the product form never appears. The test assumes the edit form reuses the same fields as the create product form.
+**Test:** `frontend/edit-product.cy.js` covers this flow and fails on purpose until the bug is fixed. It fails right after clicking "Editar", with the message `edit page should open after clicking "Editar"`, because the page stays on the product list. Everything before that step (login, finding the product in the list) works.
+
+Since the edit page doesn't exist yet, `EditProductPage` assumes it will reuse the `data-testid` attributes of the create product form. Good practice would be for the new page to expose its own `data-testid` attributes for its fields and save button, so these selectors can be confirmed once the page exists.
 
 ## Requirements
 

@@ -1,7 +1,7 @@
 import LoginPage from "../../support/pages/LoginPage";
 import AdminHomePage from "../../support/pages/AdminHomePage";
 import CreateProductPage from "../../support/pages/CreateProductPage";
-import ProductListPage from "../../support/pages/ProductListPage";
+import ProductListPage, { PRODUCT_COLUMNS } from "../../support/pages/ProductListPage";
 import ProductsService from "../../support/api/ProductsService";
 import { USERS } from "../../support/data/userData";
 import { buildProduct } from "../../support/factories/productFactory";
@@ -43,13 +43,22 @@ describe("Frontend | Create product", () => {
 
     cy.location("pathname").should("eq", ProductListPage.path);
     ProductListPage.heading.should("have.text", MESSAGES.PRODUCT_LIST_HEADING);
-    ProductListPage.productRow(product.nome)
-      .should("be.visible")
-      .within(() => {
-        cy.get("td").eq(0).should("have.text", product.nome);
-        cy.get("td").eq(1).should("have.text", String(product.preco));
-        cy.get("td").eq(2).should("have.text", product.descricao);
-        cy.get("td").eq(3).should("have.text", String(product.quantidade));
-      });
+    ProductListPage.productRow(product.nome).should("be.visible");
+    ProductListPage.productCell(product.nome, PRODUCT_COLUMNS.NAME).should(
+      "have.text",
+      product.nome,
+    );
+    ProductListPage.productCell(product.nome, PRODUCT_COLUMNS.PRICE).should(
+      "have.text",
+      String(product.preco),
+    );
+    ProductListPage.productCell(product.nome, PRODUCT_COLUMNS.DESCRIPTION).should(
+      "have.text",
+      product.descricao,
+    );
+    ProductListPage.productCell(product.nome, PRODUCT_COLUMNS.QUANTITY).should(
+      "have.text",
+      String(product.quantidade),
+    );
   });
 });
